@@ -1,0 +1,6 @@
+name = Cookieless
+description = Rewrites static urls to cookieless domain specified.
+package = Performance
+core = 7.x
+
+configure = admin/config/development/performance/cookieless

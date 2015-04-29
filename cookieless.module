@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function cookieless_menu() {
+    $file_path = drupal_get_path('module', 'cookieless');
+    $items = array();
+    $items['admin/config/development/performance/cookieless'] = array(
+        'title' => 'Cookieless', 
+        'description' => 'Set the subdomain js and css will be loaded from.', 
+        'page arguments' => array('cookieless_admin_settings_form'), 
+        'access arguments' => array('administer site configuration'), 
+        'type' => MENU_LOCAL_TASK, 
+        'file path' => $file_path, 
+        'file' => 'cookieless.admin.inc'
+    );
+    return $items;
+}
+
+/**
+ * Implements hook_file_url_alter().
+ */
+function cookieless_file_url_alter(&$original_uri) {
+    if ($host = variable_get('cookieless_host', false)) {
+        if (preg_match('/^public/', $original_uri) === 1) {
+            $original_uri = str_replace('public://', 
+                variable_get('file_public_path', conf_path() . '/files') . '/', $original_uri);
+        }
+        $original_uri = '//' . $host . '/' . $original_uri;
+    }
+}
